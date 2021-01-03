@@ -31,39 +31,39 @@ springboot+vue前后端分离的云音乐网站幻听音乐网站
 
    图2-1-1 前台展示主界面
 
- ![image-20210103144417755](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144417755.png)
+ ![image-20210103144417755](\images\image-20210103144417755.png)
 
 图2-1-2 歌单界面
 
- ![image-20210103144431435](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144431435.png)
+ ![image-20210103144431435](\images\image-20210103144431435.png)
 
 图2-1-3 歌手界面
 
-![image-20210103144440416](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144440416.png)
+![image-20210103144440416](\images\image-20210103144440416.png)
 
  
 
 图2-1-4 登录界面
 
- ![image-20210103144447657](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144447657.png)
+ ![image-20210103144447657](\images\image-20210103144447657.png)
 
 图2-1-5 注册界面
 
-  ![image-20210103144451665](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144451665.png)
+  ![image-20210103144451665](\images\image-20210103144451665.png)
 
 图2-1-1 我的音乐界面
 
- ![image-20210103144454699](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144454699.png)
+ ![image-20210103144454699](\images\image-20210103144454699.png)
 
 图2-1-1 歌单详情界面
 
- ![image-20210103144458547](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144458547.png)
+ ![image-20210103144458547](\images\image-20210103144458547.png)
 
   图2-1-1 歌单列表界面
 
- ![image-20210103144501210](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144501210.png)
+ ![image-20210103144501210](\images\image-20210103144501210.png)
 
- ![image-20210103144517662](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144517662.png)
+ ![image-20210103144517662](\images\image-20210103144517662.png)
 
  图2-1-1 列表界面
 
@@ -73,27 +73,27 @@ springboot+vue前后端分离的云音乐网站幻听音乐网站
 
  
 
- ![image-20210103144532614](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144532614.png)
+ ![image-20210103144532614](\images\image-20210103144532614.png)
 
 图2-1 后台管理主界面
 
- ![image-20210103144535518](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144535518.png)
+ ![image-20210103144535518](\images\image-20210103144535518.png)
 
 图2-2 用户管理界面
 
- ![image-20210103144539157](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144539157.png)
+ ![image-20210103144539157](\images\image-20210103144539157.png)
 
 图2-3 歌手管理界面
 
- ![image-20210103144542269](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144542269.png)
+ ![image-20210103144542269](\images\image-20210103144542269.png)
 
 图2-4 歌单管理界面
 
- ![image-20210103144545289](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144545289.png)
+ ![image-20210103144545289](\images\image-20210103144545289.png)
 
 图2-5 歌曲信息管理界面
 
- ![image-20210103144548713](C:\Users\Jun\AppData\Roaming\Typora\typora-user-images\image-20210103144548713.png)
+ ![image-20210103144548713](\images\image-20210103144548713.png)
 
 图2-6歌单歌曲信息管理界面
 
