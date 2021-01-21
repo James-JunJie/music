@@ -9,7 +9,7 @@
 * 数据库和工具：MySql5.7 Navicat
 * 开发工具： Intellij Idea VSCode 
 * 浏览器：Chrome
-* 
+* 存储方式：FastDFS
 
 # 更改后端端口
 
