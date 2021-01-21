@@ -213,7 +213,7 @@ export default {
                 this.currentPage = 1;
             })
         },
-        //添加歌手
+        //添加歌曲
         addSong(){
             let _this = this;
             var form = new FormData(document.getElementById('tf'));

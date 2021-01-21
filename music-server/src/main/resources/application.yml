@@ -3,8 +3,8 @@ server:
 spring:
   datasource:
 #   music  118.31.121.237:3306; root  localhost
-    url :  jdbc:mysql://localhost:3306/music?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
-    username: root
+    url :  jdbc:mysql://118.31.121.237:3306/music?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: music
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
@@ -18,5 +18,3 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-enums-package: com.junjie.music.enums
-
-

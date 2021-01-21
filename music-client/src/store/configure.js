@@ -1,6 +1,7 @@
 const configure = {
     state:{
-        HOST: "http://localhost:8088/",  //后台访问地址根目录
+        HOST: "http://118.31.121.237",  //后台访问地址根目录
+        HOST_upload: "http://118.31.121.237:8088",
        //   HOST:"http://localhost:8888/",  //后台访问地址根目录
 	  	//"http://localhost:8888/",
 		 //    HOST: "http://118.31.121.237:8088/",  //后台访问地址根目录

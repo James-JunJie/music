@@ -76,14 +76,14 @@
       this.loginMsg = loginMsg;
     },
     mounted(){
-        document.querySelector('#user').addEventListener('click',function(e){
+      document.querySelector('#user').addEventListener('click',function(e){
             document.querySelector('.menu').classList.add("show");
             e.stopPropagation()           //关键在于阻止冒泡
         },false);
         document.querySelector('.menu').addEventListener('click',function(e){
             e.stopPropagation()           //点击菜单内部时，阻止时间冒泡，这样，点击内部时，菜单不会关闭
         },false);
-        document.addEventListener('click',function(){
+       document.addEventListener('click',function(){
           document.querySelector('.menu').classList.remove('show');
         },false);
     },

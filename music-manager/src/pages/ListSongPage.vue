@@ -101,6 +101,7 @@ export default {
            var songOfName = _this.registerForm.singerName+"-"+_this.registerForm.songName;
             songOfSongName(songOfName).then(
                 res => {
+                  console.log(res[0]);
                     _this.addSong(res[0].id)
                 }
             )

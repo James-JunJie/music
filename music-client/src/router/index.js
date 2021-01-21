@@ -15,8 +15,6 @@ import Lyric  from '../pages/Lyric.vue'
 Vue.use(Router)
 
 export default new Router({
-  //不带#
-  mode: 'history',
   routes: [{
       path: '/',
       name: 'Home',

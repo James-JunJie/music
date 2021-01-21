@@ -8,8 +8,9 @@ export const mixin = {
             })
         },
         //根据相对地址获取绝对地址
-        getUrl(url){ 
-            return `http://118.31.121.237:8088/${url}`
+        getUrl(url){
+            //return `http://118.31.121.237:8088/${url}`
+            return `http://118.31.121.237/${url}`
 			     //http://localhost:8888/
         },
           //获取生日

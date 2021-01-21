@@ -1,17 +1,20 @@
 package com.junjie.music.controller;
 
  
+import com.junjie.music.entity.Consumer;
 import com.junjie.music.entity.Song;
 import com.junjie.music.result.Code;
 import com.junjie.music.result.Result;
 import com.junjie.music.service.SongService;
+import com.junjie.music.utils.FastDFSUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -35,41 +38,78 @@ public class SongController {
     SongService songService;
 
     /**
-     * 添加
+     * 添加歌曲
      * @param song
      * @return
      */
     @RequestMapping("/add")
-    public Result add(Song song,@RequestParam("file")MultipartFile file) throws FileNotFoundException {
-        System.out.println("歌曲"+song);
+    public Result add(Song song,@RequestParam("file")MultipartFile file) throws IOException {
         //首先判断是否是空文件，也就是存储空间占用为0的文件
         if(file.isEmpty()){
             return  new Result(Code.EEROR,"上传失败");
         }
-        //文件名=当前时间到毫秒+原来的文件名
-        String fileName = System.currentTimeMillis()+file.getOriginalFilename();
-        //文件路径
-        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/song";
-        //如果文件路径不存在，新增该路径
-        File file1 = new File(filePath);
-        if(!file1.exists()){
-            file1.mkdir();
-        }
-        //实际的文件地址
-        File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-        //存储到数据库里的相对文件地址
-        String storeAvatorPath = "/song/"+fileName;
-        try {
-            file.transferTo(dest);
-            song.setUrl(storeAvatorPath);
-            boolean flag = songService.save(song);
-            return new Result(flag ? Code.OK: Code.EEROR);
-        } catch (IOException e) {
-            return  new Result(Code.EEROR,e.getMessage());
-        }
+        //1.先将文件保存fastdfs
+        //获取文件对应的字节数组
+        byte[] buffFile=file.getBytes();
+        //获取文件名
+        String fileName=file.getOriginalFilename();
+        Long fileSize=file.getSize();
+        String fileType=file.getContentType();
+        //可能会出现问题因为有些文件可能没有扩展名，因此必要时需要做逻辑控制
+        String fileExtName=fileName.substring(fileName.lastIndexOf(".")+1);
+        /**
+         * 调用util工具类进行上传
+         * */
+        String[] result= FastDFSUtil.upload(buffFile,fileExtName);
+        String groupName = result[0];
+        String remoteFilePath =  result[1];
+        String url = "/"+groupName+"/"+remoteFilePath;
+
+        //2.加入url,添加song
+        song.setUrl(url);
+        boolean flag = songService.save(song);
+        return new Result(flag ? Code.OK: Code.EEROR);
     }
-
-
+    /**
+     * 更新歌曲
+     * */
+    @RequestMapping("/updateSongUrl")
+    public Result updateSong(int id,@RequestParam("file")MultipartFile file) throws IOException {
+        //首先判断是否是空文件，也就是存储空间占用为0的文件
+        if(file.isEmpty()){
+            return  new Result(Code.EEROR,"上传失败");
+        }
+        //1.先将文件保存fastdfs
+        //获取文件对应的字节数组
+        byte[] buffFile=file.getBytes();
+        //获取文件名
+        String fileName=file.getOriginalFilename();
+        Long fileSize=file.getSize();
+        String fileType=file.getContentType();
+        //可能会出现问题因为有些文件可能没有扩展名，因此必要时需要做逻辑控制
+        String fileExtName=fileName.substring(fileName.lastIndexOf(".")+1);
+        /**
+         * 调用util工具类进行上传
+         * */
+        String[] result= FastDFSUtil.upload(buffFile,fileExtName);
+        String groupName = result[0];
+        String remoteFilePath =  result[1];
+        String url = "/"+groupName+"/"+remoteFilePath;
+        //2.加入url,添加
+        //获取id对应的实体
+        Song song  = songService.getById(id);
+        String songUrl = song.getUrl();
+        //2.1 如果有url,则需要删除fastDFS中的数据，以免成为野文件
+        if(songUrl!= null||!"".equals(songUrl)){
+            String groupNameOld = songUrl.substring(1,songUrl.indexOf("M")-1);
+            String remoteFilePathOld = songUrl.substring(songUrl.indexOf("M"));
+            FastDFSUtil.delete(groupNameOld,remoteFilePathOld);
+        }
+        song.setId(id);
+        song.setUrl(url);
+        boolean flag = songService.update(song);
+        return new Result(flag ? Code.OK: Code.EEROR);
+    }
     /**
      * 查询所有
      * @return
@@ -86,34 +126,43 @@ public class SongController {
      * @return
      */
     @RequestMapping(value = "/updateSongPic", method = RequestMethod.POST)
-    public Result updataPic(@RequestParam("file") MultipartFile file, int id) throws FileNotFoundException {
+    public Result updataPic(@RequestParam("file") MultipartFile file, int id) throws IOException {
         //首先判断是否是空文件，也就是存储空间占用为0的文件
         if(file.isEmpty()){
             return  new Result(Code.EEROR,"上传失败");
         }
-        //文件名=当前时间到毫秒+原来的文件名
-        String fileName = System.currentTimeMillis()+file.getOriginalFilename();
-        //文件路径
-        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/img/songPic";
-        //如果文件路径不存在，新增该路径
-        File file1 = new File(filePath);
-        if(!file1.exists()){
-            file1.mkdir();
+        //1.先将文件保存fastdfs
+        //获取文件对应的字节数组
+        byte[] buffFile=file.getBytes();
+        //获取文件名
+        String fileName=file.getOriginalFilename();
+        Long fileSize=file.getSize();
+        String fileType=file.getContentType();
+        //可能会出现问题因为有些文件可能没有扩展名，因此必要时需要做逻辑控制
+        String fileExtName=fileName.substring(fileName.lastIndexOf(".")+1);
+        /**
+         * 调用util工具类进行上传
+         * */
+        String[] result= FastDFSUtil.upload(buffFile,fileExtName);
+        String groupName = result[0];
+        String remoteFilePath =  result[1];
+        String url = "/"+groupName+"/"+remoteFilePath;
+
+        //2.加入url,添加
+        //获取id对应的实体
+        Song song  = songService.getById(id);
+        String songUrl = song.getUrl();
+        //2.1 如果有url,则需要删除fastDFS中的数据，以免成为野文件
+        if(songUrl!= null||!"".equals(songUrl)){
+            String groupNameOld = songUrl.substring(1,songUrl.indexOf("M")-1);
+            String remoteFilePathOld = songUrl.substring(songUrl.indexOf("M"));
+            FastDFSUtil.delete(groupNameOld,remoteFilePathOld);
         }
-        //实际的文件地址
-        File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-        //存储到数据库里的相对文件地址
-        String storeAvatorPath = "/img/songPic/"+fileName;
-        try {
-            file.transferTo(dest);
-            Song song = new Song();
-            song.setId(id);
-            song.setPic(storeAvatorPath);
-            boolean flag = songService.update(song);
-            return new Result(flag ? Code.OK: Code.EEROR);
-        } catch (IOException e) {
-            return  new Result(Code.EEROR,e.getMessage());
-        }
+
+        song.setId(id);
+        song.setPic(url);
+        boolean flag = songService.update(song);
+        return new Result(flag ? Code.OK: Code.EEROR);
     }
 
     /**
@@ -169,6 +218,27 @@ public class SongController {
     public Song getById(int songId ){
         Song song = songService.get(songId);
         return  song;
+    }
+
+    @RequestMapping("/downloadSong")
+    public ResponseEntity<byte[]> download(int id){
+        Song song= songService.getById(id);
+        String url = song.getUrl();
+        String groupName = url.substring(1,url.indexOf("M")-1);
+        String remoteFilePath = url.substring(url.indexOf("M"));
+        byte [] buffFile=FastDFSUtil.download(groupName,remoteFilePath);
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);//设置响应类型为文件类型
+        //设置下载时的默认文件名
+        headers.setContentDispositionFormData("attachment",song.getName());
+        /**
+         * 创建响应实体对象，Spring会将这个对象返回给浏览器，作为响应数据
+         * 参数 1 为响应时的具体数据
+         * 参数 2 为响应时的头文件信息
+         * 参数 3 为响应时的状态码
+         */
+        ResponseEntity<byte[]> responseEntity=new ResponseEntity<byte[]>(buffFile,headers, HttpStatus.OK);
+        return responseEntity;
     }
 
 }

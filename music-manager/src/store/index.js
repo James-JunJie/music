@@ -4,7 +4,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state:{
-        HOST:'http://localhost:8088', 
+        HOST:'http://118.31.121.237:8088', 
 		//'http://localhost:8088'
 		//'http://118.31.121.237:8088',
         isPlay: false,          //是否播放中

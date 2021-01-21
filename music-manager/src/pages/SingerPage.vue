@@ -208,7 +208,7 @@
         params.append('birth', datetime);
         params.append('location', this.registerForm.location);
         params.append('introduction', this.registerForm.introduction);
-        params.append('pic', '/img/singerPic/source.jpg');
+        params.append('pic', '/group1/M00/00/00/rBCrkWAAXkyAWk8oAABV5WKQXr.jpg');
         console.log(datetime)
         setSinger(params)
           .then(res => {

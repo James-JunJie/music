@@ -6,6 +6,7 @@ import com.junjie.music.entity.Song;
 import com.junjie.music.result.Code;
 import com.junjie.music.result.Result;
 import com.junjie.music.service.SingerService;
+import com.junjie.music.utils.FastDFSUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ResourceUtils;
@@ -63,34 +64,42 @@ public class SingerController {
      * @return
      */
     @RequestMapping(value = "/updateSingerPic", method = RequestMethod.POST)
-        public Result updataPic(@RequestParam("file") MultipartFile file,int id) throws FileNotFoundException {
+        public Result updataPic(@RequestParam("file") MultipartFile file,int id) throws IOException {
         //首先判断是否是空文件，也就是存储空间占用为0的文件
         if(file.isEmpty()){
-           return  new Result(Code.EEROR,"上传失败");
+            return  new Result(Code.EEROR,"上传失败");
         }
-        //文件名=当前时间到毫秒+原来的文件名
-        String fileName = System.currentTimeMillis()+file.getOriginalFilename();
-        //文件路径
-        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/img/singerPic";
-        //如果文件路径不存在，新增该路径
-        File file1 = new File(filePath);
-        if(!file1.exists()){
-            file1.mkdir();
+        //1.先将文件保存fastdfs
+        //获取文件对应的字节数组
+        byte[] buffFile=file.getBytes();
+        //获取文件名
+        String fileName=file.getOriginalFilename();
+        Long fileSize=file.getSize();
+        String fileType=file.getContentType();
+        //可能会出现问题因为有些文件可能没有扩展名，因此必要时需要做逻辑控制
+        String fileExtName=fileName.substring(fileName.lastIndexOf(".")+1);
+        /**
+         * 调用util工具类进行上传
+         * */
+        String[] result= FastDFSUtil.upload(buffFile,fileExtName);
+        String groupName = result[0];
+        String remoteFilePath =  result[1];
+        String url = "/"+groupName+"/"+remoteFilePath;
+
+        //2.加入url,添加
+        //获取id对应的实体
+        Singer singer  = singerService.getById(id);
+        String singerUrl = singer.getPic();
+        //2.1 如果有url,则需要删除fastDFS中的数据，以免成为野文件
+        if(singerUrl!= null||!"".equals(singerUrl)){
+            String groupNameOld = singerUrl.substring(1,singerUrl.indexOf("M")-1);
+            String remoteFilePathOld = singerUrl.substring(singerUrl.indexOf("M"));
+            FastDFSUtil.delete(groupNameOld,remoteFilePathOld);
         }
-        //实际的文件地址
-        File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-        //存储到数据库里的相对文件地址
-        String storeAvatorPath = "/img/singerPic/"+fileName;
-        try {
-            file.transferTo(dest);
-            Singer singer = new Singer();
-            singer.setId(id);
-            singer.setPic(storeAvatorPath);
-            boolean flag = singerService.update(singer);
-            return new Result(flag ? Code.OK: Code.EEROR);
-        } catch (IOException e) {
-            return  new Result(Code.EEROR,e.getMessage());
-        }
+        singer.setId(id);
+        singer.setPic(url);
+        boolean flag = singerService.update(singer);
+        return new Result(flag ? Code.OK: Code.EEROR);
     }
 
     /**

@@ -170,10 +170,9 @@ export default {
         addSongList(){
             let params = new URLSearchParams();
             params.append('title',this.registerForm.title);
-            params.append('pic','/img/songListPic/music.jpg');
             params.append('introduction',this.registerForm.introduction);
             params.append('style',this.registerForm.style);
-
+            params.append('pic', '/group1/M00/00/00/rBCrkWAAXkyAWk8oAABV5WKQXr.jpg');
             setSongList(params)
             .then(res => {
                 if(res.code == 1){
